@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Concerts - ShowTime</title>
+</head>
+<body>
+    <%- include('../partials/header'); %>
+    
+    <section class="bg-[#F3F3F3] py-8 antialiased md:py-16">
+        <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+            
+            <!-- Filters Section (Mobile: Collapsible, Desktop: Always visible) -->
+            <div class="mb-6 bg-white rounded-lg shadow p-4">
+                <!-- Toggle Button (Mobile Only) -->
+                <button onclick="toggleFilters()" 
+                    class="lg:hidden w-full flex items-center justify-between text-left font-semibold text-gray-800 mb-4">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        Filters
+                    </span>
+                    <svg id="filterIcon" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <!-- Filters Form -->
+                <form action="/concerts" method="GET" id="filterForm" class="hidden lg:block">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <!-- Search -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                            <input type="text" name="search" 
+                                value="<%= typeof filters !== 'undefined' && filters.search ? filters.search : '' %>"
+                                placeholder="Concert name..."
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#19634C] focus:border-transparent" />
+                        </div>
+
+                        <!-- Genre -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
+                            <select name="genre"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#19634C] focus:border-transparent cursor-pointer">
+                                <option value="">All Genres</option>
+                                <option value="ROCK" <%= typeof filters !== 'undefined' && filters.genre === 'ROCK' ? 'selected' : '' %>>Rock</option>
+                                <option value="POP" <%= typeof filters !== 'undefined' && filters.genre === 'POP' ? 'selected' : '' %>>Pop</option>
+                                <option value="JAZZ" <%= typeof filters !== 'undefined' && filters.genre === 'JAZZ' ? 'selected' : '' %>>Jazz</option>
+                                <option value="ELECTRONIC" <%= typeof filters !== 'undefined' && filters.genre === 'ELECTRONIC' ? 'selected' : '' %>>Electronic</option>
+                                <option value="HIP_HOP" <%= typeof filters !== 'undefined' && filters.genre === 'HIP_HOP' ? 'selected' : '' %>>Hip Hop</option>
+                                <option value="CLASSICAL" <%= typeof filters !== 'undefined' && filters.genre === 'CLASSICAL' ? 'selected' : '' %>>Classical</option>
+                                <option value="METAL" <%= typeof filters !== 'undefined' && filters.genre === 'METAL' ? 'selected' : '' %>>Metal</option>
+                                <option value="INDIE" <%= typeof filters !== 'undefined' && filters.genre === 'INDIE' ? 'selected' : '' %>>Indie</option>
+                                <option value="OTHER" <%= typeof filters !== 'undefined' && filters.genre === 'OTHER' ? 'selected' : '' %>>Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Group/Band -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Band/Artist</label>
+                            <select name="groupId"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#19634C] focus:border-transparent cursor-pointer">
+                                <option value="">All Bands</option>
+                                <% 
+                                if (typeof groups !== 'undefined' && groups && groups.length > 0) { 
+                                %>
+                                    <% groups.forEach(group => { %>
+                                        <option value="<%= group.id %>" 
+                                            <%= typeof filters !== 'undefined' && filters.groupId === group.id ? 'selected' : '' %>>
+                                            <%= group.name %>
+                                        </option>
+                                    <% }); %>
+                                <% } %>
+                            </select>
+                        </div>
+
+                        <!-- Date From -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
+                            <input type="date" name="dateFrom"
+                                value="<%= typeof filters !== 'undefined' && filters.dateFrom ? (typeof filters.dateFrom === 'string' ? filters.dateFrom : new Date(filters.dateFrom).toISOString().split('T')[0]) : '' %>"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#19634C] focus:border-transparent cursor-pointer" />
+                        </div>
+
+                        <!-- Date To -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
+                            <input type="date" name="dateTo"
+                                value="<%= typeof filters !== 'undefined' && filters.dateTo ? (typeof filters.dateTo === 'string' ? filters.dateTo : new Date(filters.dateTo).toISOString().split('T')[0]) : '' %>"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#19634C] focus:border-transparent cursor-pointer" />
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-3 mt-4 items-center">
+                        <button type="submit"
+                            class="px-6 py-2 bg-[#FF214F] text-white rounded-lg hover:bg-[#f83159ff] transition cursor-pointer">
+                            <i class="fas fa-search mr-2"></i>Apply Filters
+                        </button>
+                        <a href="/concerts"
+                            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition inline-block">
+                            <i class="fas fa-times mr-2"></i>Clear
+                        </a>
+                        <% if (concerts && concerts.length > 0) { %>
+                            <span class="ml-auto flex items-center text-gray-600">
+                                <i class="fas fa-music mr-2"></i>
+                                <%= concerts.length %> concert(s) found
+                            </span>
+                        <% } %>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Concerts List -->
+            <div class="mt-6 sm:mt-8">
+                <div class="mx-auto w-full">
+                    <div class="space-y-6">
+                        <% if (concerts && concerts.length > 0) { %>
+                            <% concerts.forEach(concert => { %>
+                                <a href="/concerts/<%= concert.id %>">
+                                    <div class="rounded-lg border border-gray-200 bg-white p-4 md:p-6 shadow-sm hover:shadow-lg transition">
+                                        <div class="space-y-4 lg:flex lg:items-center lg:justify-between lg:gap-6 lg:space-y-0">
+
+                                            <div class="bg-[#FF214F] p-6 md:p-8 flex items-center space-x-4 text-white rounded-lg">
+                                                <span class="text-3xl md:text-4xl font-bold"><%= concert.date.getDate() %></span>
+                                                <div class="space-y-1">
+                                                    <span class="text-sm md:text-base font-semibold">
+                                                        <%= concert.date.toLocaleString('default', {month: 'long'}) %>
+                                                    </span>
+                                                    <span class="text-xs md:text-sm opacity-90">
+                                                        <%= concert.date.getFullYear() %> • <%= concert.date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) %>
+                                                    </span>
+                                                    <% if (concert.location) { %>
+                                                        <span class="block text-sm md:text-base mt-1"> <%= concert.location %></span>
+                                                    <% } %>
+                                                    <% if (concert.availableSeats != null && concert.totalSeats != null) { 
+                                                        const soldPercentage = Math.round((concert.totalSeats - concert.availableSeats) / concert.totalSeats * 100); %>
+                                                        <span class="block text-sm md:text-base mt-1"><i class="fas fa-ticket-alt mr-1"></i><%= concert.availableSeats %> / <%= concert.totalSeats %> seats</span>
+                                                        <% if (soldPercentage > 80) { %>
+                                                            <span class="inline-block mt-1 px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-semibold">Almost sold out!</span>
+                                                        <% } else if (soldPercentage > 50) { %>
+                                                            <span class="inline-block mt-1 px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-semibold">Selling fast</span>
+                                                        <% } %>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+
+                                            <div class="flex items-center space-x-2 shrink-0 mt-5 mt-0">
+                                                <a href="/concerts/<%= concert.id %>" class="w-24 h-24 md:w-32 md:h-32">
+                                                    <img class="w-full h-full object-cover rounded-lg shadow"
+                                                        src="<%= concert.image || '/image.jpg' %>"
+                                                        alt="<%= concert.name %>" />
+                                                </a>
+                                            </div>
+
+                                            <div class="w-full min-w-0 flex-1 space-y-3">
+                                                <div class="flex items-start justify-between">
+                                                    <div>
+                                                        <h3 class="text-xl md:text-2xl font-bold text-gray-900"><%= concert.name %></h3>
+                                                        <p class="text-sm text-gray-600 mt-1"><i class="fas fa-map-marker-alt mr-1"></i><%= concert.location %></p>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <p class="text-xl md:text-2xl font-bold text-[#FF214F]">$<%= concert.price %></p>
+                                                        <span class="inline-block mt-1 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold"><%= concert.genre %></span>
+                                                    </div>
+                                                </div>
+
+                                                <% if (concert.groups && concert.groups.length > 0) { %>
+                                                    <div class="flex flex-wrap gap-2">
+                                                        <span class="text-sm text-gray-600"><i class="fas fa-users mr-1"></i>Artists:</span>
+                                                        <% concert.groups.forEach(group => { %>
+                                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium"><%= group.name %></span>
+                                                        <% }); %>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+
+                                            <div class="flex flex-col gap-2 md:w-48">
+                                                <a href="/concerts/<%= concert.id %>" class="inline-flex justify-center items-center rounded-lg bg-black text-white px-4 py-2.5 text-sm font-medium hover:bg-gray-800 transition cursor-pointer">
+                                                    <i class="fas fa-eye mr-2"></i>View Details
+                                                </a>
+                                                <% if (user) { %>
+                                                    <form method="POST" action="/users/<%= user.id %>/wishlist">
+                                                        <input type="hidden" value="<%= concert.id %>" name="concertId">
+                                                        <button type="submit" class="w-full inline-flex justify-center items-center bg-red-600 text-white rounded-lg py-2.5 px-4 text-sm font-medium hover:bg-red-700 transition cursor-pointer">
+                                                            <i class="fas fa-heart mr-2"></i>Add to Wishlist
+                                                        </button>
+                                                    </form>
+                                                <% } else { %>
+                                                    <a href="/auth/login" class="w-full inline-flex justify-center items-center bg-gray-200 text-gray-700 rounded-lg py-2.5 px-4 text-sm font-medium hover:bg-gray-300 transition cursor-pointer">
+                                                        <i class="fas fa-sign-in-alt mr-2"></i>Login to Wishlist
+                                                    </a>
+                                                <% } %>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </a>
+                            <% }) %>
+                        <% } else { %>
+                            <div class="text-center py-16 bg-white rounded-lg shadow">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                                </svg>
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">No concerts found</h3>
+                                <p class="text-gray-600 mb-4">
+                                    <% if (typeof filters !== 'undefined' && (filters.search || filters.genre || filters.dateFrom || filters.dateTo)) { %>
+                                        Try adjusting your filters or <a href="/concerts" class="text-[#19634C] underline hover:text-[#145a43]">clear all filters</a>
+                                    <% } else { %>
+                                        Check back later for upcoming concerts
+                                    <% } %>
+                                </p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <%- include('../partials/footer'); %>
+
+    <script>
+        function toggleFilters() {
+            const filterForm = document.getElementById('filterForm');
+            const filterIcon = document.getElementById('filterIcon');
+            
+            filterForm.classList.toggle('hidden');
+            filterIcon.classList.toggle('rotate-180');
+        }
+    </script>
+</body>
+</html>

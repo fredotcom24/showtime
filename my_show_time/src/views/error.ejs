@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - ShowTime</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-indigo-900 flex items-center justify-center p-4">
+    
+    <div class="max-w-md w-full bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 md:p-10 text-center">
+        
+        <!-- Error Icon -->
+        <div class="mb-6">
+            <div class="w-24 h-24 mx-auto rounded-full flex items-center justify-center" 
+                 style="background-color: rgba(239, 68, 68, 0.1);">
+                <i class="fas fa-exclamation-triangle text-6xl text-red-500"></i>
+            </div>
+        </div>
+        
+        <!-- Error Code -->
+        <h1 class="text-6xl font-bold text-gray-900 mb-2">
+            <%= statusCode || 500 %>
+        </h1>
+        
+        <!-- Error Message -->
+        <h2 class="break-all text-2xl font-bold text-gray-900 mb-3">
+            <%= title || 'Something Went Wrong' %>
+        </h2>
+        
+        <p class="break-all text-gray-600 mb-8 text-sm md:text-base">
+            <%= message || 'An unexpected error occurred. Please try again later.' %>
+        </p>
+
+        <!-- Actions -->
+        <div class="space-y-3">
+            <a 
+                href="/"
+                style="background-color: #FF214F;"
+                class="block w-full text-white py-3.5 rounded-xl font-semibold hover:opacity-90 transition-all shadow-lg"
+            >
+                <i class="fas fa-home mr-2"></i>Back to Home
+            </a>
+            
+            <a 
+                href="/auth/login"
+                class="block w-full bg-gray-200 text-gray-700 py-3.5 rounded-xl font-semibold hover:bg-gray-300 transition-all"
+            >
+                <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+            </a>
+        </div>
+
+        <!-- Help -->
+        <div class="mt-8 p-4 bg-gray-50 rounded-xl">
+            <p class="text-xs text-gray-500">
+                If the problem persists, please contact support
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>

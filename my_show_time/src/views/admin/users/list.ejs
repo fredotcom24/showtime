@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-50 ">
+<%- include('../../partials/header'); %>
+    <aside class="w-full lg:w-64 bg-white shadow-md flex flex-col lg:fixed lg:left-0 lg:h-screen z-40">
+        <nav class="flex flex-row lg:flex-col p-2 sm:p-4 space-x-2 lg:space-x-0 lg:space-y-2 overflow-x-auto lg:overflow-x-visible">
+
+            <a href="/users" class="flex-shrink-0 lg:flex-shrink">
+                <div
+                    class="flex items-center justify-center gap-2 sm:gap-3 bg-[#FF214F] text-white rounded-lg sm:rounded-xl p-2 sm:p-3 min-w-[120px] lg:min-w-0 hover:bg-[#f83159ff] transition-colors">
+                    <h3 class="text-white text-sm sm:text-base whitespace-nowrap">Users</h3>
+                </div>
+            </a>
+
+            <a href="/concerts/admin" class="flex-shrink-0 lg:flex-shrink">
+                <div
+                    class="flex items-center justify-center gap-2 sm:gap-3 bg-[#FF214F] text-white rounded-lg sm:rounded-xl p-2 sm:p-3 min-w-[120px] lg:min-w-0 hover:bg-[#f83159ff] transition-colors">
+                    <h3 class="text-white text-sm sm:text-base whitespace-nowrap">Concerts</h3>
+                </div>
+            </a>
+
+            <a href="/groups" class="flex-shrink-0 lg:flex-shrink">
+                <div
+                    class="flex items-center justify-center gap-2 sm:gap-3 bg-[#FF214F] text-white rounded-lg sm:rounded-xl p-2 sm:p-3 min-w-[120px] lg:min-w-0 hover:bg-[#f83159ff] transition-colors">
+                    <h3 class="text-white text-sm sm:text-base whitespace-nowrap">Bands</h3>
+                </div>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 lg:ml-64 p-4 sm:p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-lg md:text-2xl font-bold">All Users</h1>
+            </div>
+
+            <a href="/users/create">
+                <button
+                    class="bg-[#FF214F] hover:bg-[#f83159ff] cursor-pointer text-white text-sm md:text-lg px-2 py-1 md:px-4 md:py-2 rounded-lg shadow hover:opacity-90 transition">
+                    + Add User
+                </button>
+            </a>
+        </div>
+
+        <!-- Desktop Table -->
+        <section class="hidden xl:block bg-white shadow rounded-2xl p-6">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead class="bg-[#FF214F] text-white rounded-t-xl">
+                    <tr>
+                        <th class="px-6 py-3 font-semibold">Username</th>
+                        <th class="px-6 py-3 font-semibold">Email</th>
+                        <th class="px-6 py-3 font-semibold">Role</th>
+                        <th class="px-6 py-3 font-semibold">Verified</th>
+                        <th class="px-6 py-3 font-semibold">Created At</th>
+                        <th class="px-6 py-3 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% if (users && users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                            <tr class="border-b border-gray-200 hover:bg-gray-50 transition">
+                                <td class="px-6 py-3 text-gray-800 font-medium">
+                                    <%= user.username %>
+                                </td>
+                                <td class="px-6 py-3 text-gray-600">
+                                    <%= user.email %>
+                                </td>
+                                <td class="px-6 py-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold <%= user.role === 'ADMIN' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700' %>">
+                                        <%= user.role %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold <%= user.verified ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' %>">
+                                        <%= user.verified ? 'Verified' : 'Pending' %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3 text-gray-600">
+                                    <%= new Date(user.createdAt).toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'short', 
+                                        day: 'numeric' 
+                                    }) %>
+                                </td>
+                                <td class="px-6 py-3">
+                                    <div class="flex gap-2">
+                                        <a href="/users/<%= user.id %>/edit"
+                                            class="bg-black cursor-pointer text-white px-3 py-1 rounded hover:opacity-90">
+                                            Edit
+                                        </a>
+                                        <button onclick="confirmDelete('users', '<%= user.id %>', '<%= user.username.replace(/'/g, "\\'") %>')"
+                                            class="bg-red-600 hover:bg-red-700 cursor-pointer text-white px-3 py-1 rounded hover:opacity-90">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="text-center py-6 text-gray-500">
+                                No users found
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Mobile Cards -->
+        <div class="block xl:hidden space-y-3 sm:space-y-4">
+            <% if (!users || users.length === 0) { %>
+                <div class="bg-white rounded-2xl shadow p-6 sm:p-8 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-3 sm:mb-4 text-gray-400"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <p class="text-sm sm:text-base text-gray-500">No users found</p>
+                </div>
+            <% } else { %>
+                <% users.forEach(user => { %>
+                    <div class="bg-white rounded-xl shadow p-4 sm:p-5 border border-gray-100 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-3 sm:mb-4">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 truncate">
+                                    <%= user.username %>
+                                </h3>
+                                <p class="text-xs sm:text-sm text-gray-500 mt-1 truncate">
+                                    <%= user.email %>
+                                </p>
+                            </div>
+                            <span class="ml-2 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 <%= user.role === 'ADMIN' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700' %>">
+                                <%= user.role %>
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600">
+                            <div>
+                                <span class="font-medium">Status:</span>
+                                <span class="ml-1 px-2 py-0.5 rounded text-xs <%= user.verified ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' %>">
+                                    <%= user.verified ? 'Verified' : 'Pending' %>
+                                </span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Joined:</span>
+                                <%= new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-2 pt-3 sm:pt-4 border-t border-gray-200">
+                            <a href="/users/<%= user.id %>/edit"
+                                class="flex-1 text-center bg-[#ff5200] hover:bg-[#ff7533] text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors">
+                                Edit
+                            </a>
+                            <button onclick="confirmDelete('users', '<%= user.id %>', '<%= user.username.replace(/'/g, "\\'") %>')"
+                                class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors cursor-pointer">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
+    </main>
+
+    <script>
+        function confirmDelete(type, id, name) {
+            if (confirm(`Are you sure you want to delete "${name}" ?\n\nThis action is irreversible.`)) {
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = 'Deletion...';
+                button.classList.add('opacity-50', 'cursor-not-allowed');
+
+                fetch(`http://localhost:3000/users/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    console.log(response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    if (data.success) {
+                        alert('User deleted successfully!');
+                        window.location.reload();
+                    } else {
+                        throw new Error('Deletion failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error', error);
+                    alert('Error while deleting. Please try again.');
+                    
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                    button.classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

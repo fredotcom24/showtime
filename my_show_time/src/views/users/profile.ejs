@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - ShowTime</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-indigo-900">
+    
+    <!-- Navigation -->
+    <nav class="bg-white/10 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center gap-2 text-white font-bold text-xl">
+                    <i class="fas fa-music"></i>
+                    ShowTime
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="/" class="text-white hover:text-gray-200 transition-colors">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <a href="/auth/logout" class="text-white hover:text-gray-200 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Error Message -->
+        <% if (errors && errors.message) { %>
+            <div class="mb-6 p-4 bg-red-500/90 backdrop-blur-sm border border-red-400 rounded-xl flex items-start gap-3">
+                <i class="fas fa-exclamation-circle text-white mt-0.5"></i>
+                <p class="text-sm text-white"><%= errors.message %></p>
+            </div>
+        <% } %>
+
+        <!-- Success Message -->
+        <% if (success && success.message) { %>
+            <div class="mb-6 p-4 bg-green-500/90 backdrop-blur-sm border border-green-400 rounded-xl flex items-start gap-3">
+                <i class="fas fa-check-circle text-white mt-0.5"></i>
+                <p class="text-sm text-white"><%= success.message %></p>
+            </div>
+        <% } %>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left Column - Profile Card -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6">
+                    
+                    <!-- Profile Picture -->
+                    <div class="text-center mb-6">
+                        <div class="relative inline-block">
+                            <% if (user && user.image) { %>
+                                <img src="<%= user.image %>" alt="Profile" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                            <% } else { %>
+                                <div class="w-32 h-32 rounded-full flex items-center justify-center text-4xl text-white font-bold shadow-lg" style="background-color: #FF214F;">
+                                    <img src="https://img.icons8.com/?size=1200&id=4V1nG4SioGjp&format=jpg" alt="Profile" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
+                                </div>
+                            <% } %>
+                            <% if (user && user.verified) { %>
+                                <div class="absolute bottom-2 right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-xs"></i>
+                                </div>
+                            <% } %>
+                        </div>
+                        
+                        <h2 class="text-2xl font-bold text-gray-900 mt-4">
+                            <%= user && user.username ? user.username : 'User' %>
+                        </h2>
+                        <p class="text-gray-600 text-sm">
+                            <%= user && user.email ? user.email : 'email@example.com' %>
+                        </p>
+                        
+                        <% if (user && user.role) { %>
+                            <span class="inline-block mt-3 px-3 py-1 rounded-full text-xs font-semibold" 
+                                  style="<%= user.role === 'ADMIN' ? 'background-color: #FF214F; color: white;' : 'background-color: #e5e7eb; color: #374151;' %>">
+                                <%= user.role %>
+                            </span>
+                        <% } %>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-4 mb-6 text-center">
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold" style="color: #FF214F;">
+                                <%= user && user.tickets ? user.tickets.length : 0 %>
+                            </div>
+                            <div class="text-xs text-gray-600">Tickets</div>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold" style="color: #FF214F;">
+                                <%= user && user.favoriteGroups ? user.favoriteGroups.length : 0 %>
+                            </div>
+                            <div class="text-xs text-gray-600">Groups</div>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <div class="text-2xl font-bold" style="color: #FF214F;">
+                                <%= user && user.wishListConcerts ? user.wishListConcerts.length : 0 %>
+                            </div>
+                            <div class="text-xs text-gray-600">Wishlist</div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="space-y-3">
+                        <a href="/users/<%= user.id %>/profile/edit" 
+                           style="background-color: #FF214F;"
+                           class="block w-full text-center text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-all">
+                            <i class="fas fa-edit mr-2"></i>Edit Profile
+                        </a>
+                        <a href="/users/<%=user.id%>/profile/change-password/" 
+                           class="block w-full text-center bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all">
+                            <i class="fas fa-key mr-2"></i>Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Content Tabs -->
+            <div class="lg:col-span-2">
+                
+                <!-- Tabs -->
+                <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden">
+                    <div class="border-b border-gray-200">
+                        <nav class="flex">
+                            <button onclick="switchTab('tickets')" id="tab-tickets" 
+                                    class="flex-1 py-4 px-6 text-center font-semibold transition-colors border-b-2 border-transparent hover:bg-gray-50"
+                                    style="border-color: #FF214F; color: #FF214F;">
+                                <i class="fas fa-ticket-alt mr-2"></i>My Tickets
+                            </button>
+                            <button onclick="switchTab('favorites')" id="tab-favorites" 
+                                    class="flex-1 py-4 px-6 text-center font-semibold text-gray-600 transition-colors border-b-2 border-transparent hover:bg-gray-50">
+                                <i class="fas fa-heart mr-2"></i>Favorite Groups
+                            </button>
+                            <button onclick="switchTab('wishlist')" id="tab-wishlist" 
+                                    class="flex-1 py-4 px-6 text-center font-semibold text-gray-600 transition-colors border-b-2 border-transparent hover:bg-gray-50">
+                                <i class="fas fa-star mr-2"></i>Wishlist
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="p-6">
+                        
+                        <!-- Tickets Tab -->
+                        <div id="content-tickets" class="tab-content">
+                            <% if (user && user.tickets && user.tickets.length > 0) { %>
+                                <div class="space-y-4">
+                                    <% user.tickets.forEach(ticket => { %>
+                                        <a href="/tickets/<%= ticket?.id %>/detail">
+                                        <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <h3 class="font-bold text-lg text-gray-900">
+                                                        <%= ticket.concert ? ticket.concert.name : 'Concert' %>
+                                                    </h3>
+                                                    <p class="text-sm text-gray-600 mt-1">
+                                                        <i class="fas fa-calendar mr-2"></i>
+                                                        <%= ticket.concert && ticket.concert.date ? new Date(ticket.concert.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date TBD' %>
+                                                    </p>
+                                                    <p class="text-sm text-gray-600 mt-1">
+                                                        <i class="fas fa-map-marker-alt mr-2"></i>
+                                                        <%= ticket.concert && ticket.concert.location ? ticket.concert.location : 'Location TBD' %>
+                                                    </p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <span class="text-xl font-bold" style="color: #FF214F;">
+                                                        $<%= ticket.concert && ticket.concert.price ? ticket.concert.price : '0' %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </a>
+                                    <% }); %>
+                                </div>
+                            <% } else { %>
+                                <div class="text-center py-12">
+                                    <i class="fas fa-ticket-alt text-6xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-600 mb-4">You don't have any tickets yet</p>
+                                    <a href="/concerts" style="background-color: #FF214F;" 
+                                       class="inline-block px-6 py-3 text-white rounded-lg font-semibold hover:opacity-90 transition-all">
+                                        Browse Concerts
+                                    </a>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <!-- Favorites Tab -->
+                        <div id="content-favorites" class="tab-content hidden">
+                            <% if (user && user.favoriteGroups && user.favoriteGroups.length > 0) { %>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <% user.favoriteGroups.forEach(group => { %>
+                                        <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                            <h3 class="font-bold text-lg text-gray-900">
+                                                <%= group.name %>
+                                            </h3>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                <%= group.genre || 'Genre' %>
+                                            </p>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            <% } else { %>
+                                <div class="text-center py-12">
+                                    <i class="fas fa-heart text-6xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-600 mb-4">No favorite groups yet</p>
+                                    <!-- <a href="/" style="background-color: #FF214F;" 
+                                       class="inline-block px-6 py-3 text-white rounded-lg font-semibold hover:opacity-90 transition-all">
+                                        Discover groups
+                                    </a> -->
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <!-- Wishlist Tab -->
+                        <div id="content-wishlist" class="tab-content hidden">
+                            <% if (user && user.wishListConcerts && user.wishListConcerts.length > 0) { %>
+                                <div class="space-y-4">
+                                    <% user.wishListConcerts.forEach(concert => { %>
+                                        <div class="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                                            <a href="/concerts/<%= concert.id %>">
+                                                <h3 class="font-bold text-lg text-gray-900">
+                                                    <%= concert.name %>
+                                                </h3>
+                                                <p class="text-sm text-gray-600 mt-1">
+                                                    <i class="fas fa-calendar mr-2"></i>
+                                                    <%= concert.date ? new Date(concert.date).toLocaleDateString() : 'Date TBD' %>
+                                                </p>
+                                                <p class="text-sm text-gray-600 mt-1">
+                                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                                    <%= concert.location || 'Location TBD' %>
+                                                </p>
+                                            </a>
+                                            
+                                            <!-- Action Buttons -->
+                                            <div class="flex gap-3 mt-4">
+                                                <a href="/users/<%= user.id %>/wishlist/remove/<%= concert.id %>" 
+                                                class="flex-1 px-4 py-2 bg-gray-200 text-gray-700 text-center rounded-lg font-semibold hover:bg-gray-300 transition-all">
+                                                    <i class="fas fa-trash mr-2"></i>Remove
+                                                </a>
+                                                <a href="/payments/<%= user.id %>/pay/<%= concert.id %>" 
+                                                style="background-color: #FF214F;" 
+                                                class="flex-1 px-4 py-2 text-white text-center rounded-lg font-semibold hover:opacity-90 transition-all">
+                                                    <i class="fas fa-ticket-alt mr-2"></i>Buy Ticket
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            <% } else { %>
+                                <div class="text-center py-12">
+                                    <i class="fas fa-star text-6xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-600 mb-4">Your wishlist is empty</p>
+                                    <a href="/concerts" style="background-color: #FF214F;" 
+                                    class="inline-block px-6 py-3 text-white rounded-lg font-semibold hover:opacity-90 transition-all">
+                                        Add Concerts
+                                    </a>
+                                </div>
+                            <% } %>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Reset all tab buttons
+            document.querySelectorAll('nav button').forEach(button => {
+                button.style.borderColor = 'transparent';
+                button.style.color = '#6b7280';
+            });
+
+            // Show selected tab
+            document.getElementById('content-' + tabName).classList.remove('hidden');
+            
+            // Highlight selected button
+            const selectedButton = document.getElementById('tab-' + tabName);
+            selectedButton.style.borderColor = '#FF214F';
+            selectedButton.style.color = '#FF214F';
+        }
+    </script>
+
+</body>
+</html>

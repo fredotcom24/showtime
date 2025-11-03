@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description"
+            content="Discover thousands of concerts and festivals on ShowTime. Compare prices, choose your seats, and get instant tickets. Book now and save!">
+        <meta name="author" content="ShowTime - Concert & Festival Ticketing">
+        <script
+            src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+            integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <title>Home- ShowTime</title>
+    </head>
+    <style>
+    @font-face {
+      font-family: 'Rockybilly';
+      src: url('/fonts/rockybilly.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Isidora';
+      src: url('/fonts/isidora.otf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    body {
+      /* font-family: 'Isidora', sans-serif;
+      letter-spacing: 2px; */
+      background-color:#FCFAFE;
+    }
+    .hero-title {
+      font-family: 'Rockybilly', sans-serif;
+      /* font-size: 120px; */
+    }
+    p{
+        color: gray;
+        font-size: 16px ;
+    }
+  </style>
+    <body>
+        <div
+            class="relative w-full h-[600px] md:h-[800px] bg-center bg-cover bg-no-repeat"
+            style="background-image: url('/hero_1.jpg')">
+            <%- include('partials/navbar'); %>
+            <div class="text-center">
+                <h1
+                    class="hero-title text-[#FF214F] mt-40 md:mt-60 mb-50 text-5xl md:text-[100px] xl:text-[120px]">Show
+                    Time
+                </h1>
+                <h2
+                    class="text-3xl lg:text-5xl mt-[-100px] font-extrabold text-[#FF214F] mt-60 mb-50">Life
+                    is music. Enjoy it here!
+                </h2>
+
+            </div>
+        </div>
+        <div class="section p-0 max-w-6xl mx-auto flex justify-center">
+            <% concerts.slice(0,1).forEach((concert) => { %>
+            <div class="container text-xl w-full">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+
+                    <div
+                        class="bg-indigo-900 py-6 px-20 md:p-8 flex items-center space-x-5 md:space-y-3 text-white">
+                        <span class="text-3xl md:text-4xl font-bold"><%=
+                            concert.date.getDate() %></span>
+                        <div class>
+                            <span class="block"><%=
+                                concert.date.toLocaleString('default', {month:
+                                'long'}) %> <%= concert.date.getFullYear()
+                                %></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white py-6 px-20">
+                        <h5 class="font-bold text-lg md:text-xl"><%=
+                            concert.name %></h5>
+                        <span
+                            class="line-clamp-2 md:line-clamp-1 text-sm md:text-base"><%=
+                            concert.description %></span>
+                    </div>
+                    <div class="bg-white p-6 px-20">
+                        <h5 class="font-bold text-lg md:text-xl"><%=
+                            concert.genre %></h5>
+                        <span
+                            class="line-clamp-2 md:line-clamp-1 text-sm md:text-base"><%=
+                            concert.availableSeats %> / <%= concert.totalSeats
+                            %> seats</span>
+                    </div>
+                    <div class="bg-white p-6 px-20">
+                        <h5 class="font-bold text-lg md:text-xl"><%=
+                            concert.location %></h5>
+                        <span class="block"><%=
+                            concert.date.toLocaleTimeString('fr-FR') %></span>
+                    </div>
+
+                    <!-- <div class="p-4 md:p-6 text-center md:text-left">
+                        <p class="text-sm md:text-base font-medium"><%= concert.groups.name %></p>
+                    </div> -->
+
+                </div>
+            </div>
+            <% }) %>
+        </div>
+
+        <div class="py-2 my-20">
+            <div class="container max-w-6xl m-auto px-6">
+
+                <div class="lg:flex justify-between items-center ">
+                    <div class="lg:w-6/12 lg:p-0 p-7">
+                        <h2
+                            class="text-4xl font-extrabold leading-tight mb-5 capitalize">
+                            Your gateway to the world's Greatest Live Events
+                        </h2>
+                        <p
+                            class="text-2xl text-indigo-900 font-bold leading-tight mb-5 capitalize">
+                            From ultimate gigs to lengendary festivals
+                        </p>
+                        <p class="text-xl"> ShowTime connects you with the
+                            artists you love. Browse our curated selection of
+                            events, compare prices, and secure your tickets with
+                            confidence. Your next musical adventure starts here.
+                        </p>
+
+                        <div class="py-5">
+                            <a href="/concerts"
+                                class="text-white rounded-full py-2 px-5 text-lg font-semibold bg-indigo-900 inline-block mr-3">Explore
+                                Events</a>
+                        </div>
+
+                    </div>
+                    <div class="lg:w-5/12 order-2">
+                        <img
+                            src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg"
+                            style="transform: scale(1) perspective(1040px) rotateY(-11deg) rotateX(2deg) rotate(2deg);"
+                            alt class="rounded">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div
+            class="bg-gradient-to-br from-indigo-950 via-pink-700 to-indigo-900 flex itmes-center text-white justify-center">
+            <h3 class="text-4xl font-semibold py-20 text-center">Recents
+                Events</h3>
+        </div>
+        <div
+            class=" m-auto flex items-center space-x-5 xl:space-x-5 max-w-7xl justify-center flex-wrap space-y-5  xl:space-y-0 py-20">
+            <% concerts.slice(-3).forEach((concert) => { %>
+            <a href="/concerts/<%= concert.id %>">
+                <div
+                    class="container mx-auto p-6 bg-white max-w-sm rounded-2xl shadow-xl hover:shadow-2xl transition duration-300">
+
+                    <img
+                        class="!h-75 w-full bg-cover object-cover rounded-lg rounded-xl"
+                        src="<%= concert.image || '/image.jpg' %>"
+                        alt="<%= concert.name %>" />
+
+                    <div class="flex justify-between items-center mt-4">
+                        <div>
+                            <h1 class="text-2xl font-semibold"><%= concert.name
+                                %></h1>
+                            <p class="mt-1 text-gray-600"><%= concert.genre
+                                %></p>
+                            <p class="mt-1 text-gray-500">$<%= concert.price
+                                %></p>
+                        </div>
+                        <% if (user) {%>
+                        <div>
+
+                            <!-- <a href="/concerts/<%= concert.id %>" -->
+                            <a
+                                href="/payments/<%= user.id %>/pay/<%= concert.id %>"
+                                class="text-white text-md font-semibold bg-[#FF214F] py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-500 transform hover:scale-110 text-nowrap">Buy
+                                Now</a>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </a>
+            <% }) %>
+        </div>
+        <!--<div
+            class="lg:flex items-center justify-between text-center lg:h-40 bg-neutral-600 px-10 xl:px-80 lg:py-30 py-10 space-y-10">
+             <h3 class="text-lg md:text-xl xl:text-3xl font-medium text-gray-200 leading-10  ">Want
+                event news and
+                updates? <br>
+                Sign up for our newsletter.
+            </h3>
+            <div class="flex justify-center items-center space-x-5">
+                <input
+                    class="border border-gray-500 p-3 rounded-xl w-full bg-white"
+                    type="text" name id
+                    placeholder="Enter your email">
+                <button
+                    class="text-white text-md font-semibold bg-[#FF214F] py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-500 transform-gpu hover:scale-110 ">
+                    subscribe
+                </button>
+            </div> 
+
+        </div>-->
+        <%- include('partials/footer'); %>
+
+    </body>
+</html>

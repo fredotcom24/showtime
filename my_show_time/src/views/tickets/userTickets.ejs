@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Tickets</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body class="bg-gray-100 min-h-screen p-6">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-900 mb-6"></h1>
+
+      <% if (tickets?.length === 0) { %>
+        <!-- No tickets -->
+        <div class="bg-white rounded-lg shadow p-8 text-center">
+          <p class="text-gray-500 text-lg">You don't have any ticket.</p>
+          <a href="/concerts" class="mt-4 inline-block bg-[#FF214F] text-white px-6 py-2 rounded-lg hover:bg-[#FF214F]">
+            See concerts
+          </a>
+        </div>
+      <% } else { %>
+        <!-- tickets List -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% tickets.forEach(ticket => { %>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <!-- Image of concert -->
+              <img 
+                src="<%= ticket.concert.image %>" 
+                alt="<%= ticket.concert.name %>"
+                class="w-full h-48 object-cover"
+              />
+              
+              <!-- Content -->
+              <div class="p-5">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">
+                  <%= ticket.concert.name %>
+                </h3>
+                
+                <div class="space-y-2 mb-4">
+                  <p class="text-sm text-gray-600">
+                    <%= ticket.concert.formattedDate %>
+                  </p>
+                  <p class="text-sm text-gray-600">
+                    <%= ticket.concert.location %>
+                  </p>
+                  <p class="text-sm text-gray-600">
+                    $<%= ticket.price.toFixed(2) %>
+                  </p>
+                </div>
+
+                <!-- Ticket status -->
+                <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded mb-4">
+                  <%= ticket.status %>
+                </span>
+
+                <!--  -->
+                <div class="flex gap-2">
+                  <a 
+                    href="/tickets/<%= ticket.id %>/detail" 
+                    class="flex-1 text-center bg-[#FF214F] text-white px-4 py-2 rounded-lg hover:bg-[#FF214F] text-sm"
+                  >
+                    View ticket
+                  </a>
+                  <button 
+                    onclick="deleteTicket('<%= ticket.id %>')"
+                    class="cursor-pointer bg-[#FF214F] text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm"
+                  >
+                  <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <script>
+      async function deleteTicket(ticketId) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?')) {
+          try {
+            const response = await fetch(`/tickets/${ticketId}`, {
+              method: 'DELETE',
+            });
+            
+            if (response.ok) {
+              alert('Ticket supprimé avec succès');
+              location.reload();
+            } else {
+              alert('Erreur lors de la suppression');
+            }
+          } catch (error) {
+            alert('Erreur: ' + error.message);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
