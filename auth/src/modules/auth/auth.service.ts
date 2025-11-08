@@ -176,7 +176,7 @@ export class AuthService {
         throw new NotFoundException(`User with ID ${id} not found`);
       }
 
-      const verificationLink = `http://localhost:3000/auth/confirm-email/${user.id}`;
+      const verificationLink = `https://showtime-2h1k.onrender.com/auth/confirm-email/${user.id}`;
 
       const message = `
         <!DOCTYPE html>
