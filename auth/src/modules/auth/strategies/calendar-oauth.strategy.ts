@@ -12,7 +12,7 @@ export class CalendarOAuthStrategy extends PassportStrategy(
     const clientID = configService.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = configService.get<string>('GOOGLE_CLIENT_SECRET');
     const callbackURL =
-      'https://showtime-2h1k.onrender.com/user-services/calendar/callback';
+      'http://localhost:3000/user-services/calendar/callback';
 
     super({
       clientID: clientID!,

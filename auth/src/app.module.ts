@@ -10,6 +10,8 @@ import { UserServicesModule } from './modules/user-services/user-services.module
 import { GmailModule } from './modules/gmail/gmail.module';
 import { GoogleDriveModule } from './modules/google-drive/google-drive.module';
 import { CalendarModule } from './modules/calendar/calendar.module';
+import { WidgetInstancesModule } from './modules/widget-instances/widget-instances.module';
+import { AboutModule } from './modules/about/about.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { CalendarModule } from './modules/calendar/calendar.module';
     GmailModule,
     GoogleDriveModule,
     CalendarModule,
+    WidgetInstancesModule,
+    AboutModule,
   ],
 })
 export class AppModule {}

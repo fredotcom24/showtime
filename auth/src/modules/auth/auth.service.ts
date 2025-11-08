@@ -41,6 +41,9 @@ export class AuthService {
       },
     });
 
+    // Auto-activate Weather service (no auth required)
+    await this.activateWeatherService(user.id);
+
     await this.sendMail(user.id);
 
     const token = this.jwtService.sign({
@@ -56,6 +59,36 @@ export class AuthService {
         username: user.username,
       },
     };
+  }
+
+  private async activateWeatherService(userId: string) {
+    try {
+      const weatherService = await this.prisma.service.findUnique({
+        where: { name: 'weather' },
+      });
+
+      if (weatherService) {
+        await this.prisma.userService.upsert({
+          where: {
+            userId_serviceId: {
+              userId,
+              serviceId: weatherService.id,
+            },
+          },
+          update: {
+            isActive: true,
+          },
+          create: {
+            userId,
+            serviceId: weatherService.id,
+            isActive: true,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error activating weather service:', error);
+      // Don't throw error, just log it
+    }
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto) {
@@ -87,6 +120,12 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    // Check if email is verified
+    if (!user.isVerified) {
+      throw new UnauthorizedException('Please verify your email before logging in');
+    }
+
     const token = this.jwtService.sign({
       userId: user.id,
       email: user.email,
@@ -137,7 +176,7 @@ export class AuthService {
         throw new NotFoundException(`User with ID ${id} not found`);
       }
 
-      const verificationLink = `https://showtime-2h1k.onrender.com/auth/confirm-email/${user.id}`;
+      const verificationLink = `http://localhost:3000/auth/confirm-email/${user.id}`;
 
       const message = `
         <!DOCTYPE html>
@@ -269,6 +308,9 @@ export class AuthService {
           password: null,
         },
       });
+
+      // Auto-activate Weather service for new users
+      await this.activateWeatherService(user.id);
     }
 
     // generate JWT

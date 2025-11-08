@@ -85,13 +85,13 @@ export class UserServicesController {
       const frontendUrl =
         this.configService.get<string>('FRONTEND_URL') ||
         'http://localhost:3001';
-      return res.redirect(`${frontendUrl}?gmail_connected=true`);
+      return res.redirect(`${frontendUrl}/services?gmail_connected=true`);
     } catch (error) {
       const frontendUrl =
         this.configService.get<string>('FRONTEND_URL') ||
         'http://localhost:3001';
       return res.redirect(
-        `${frontendUrl}?error=token_save_failed&message=${encodeURIComponent(error.message)}`,
+        `${frontendUrl}/services?error=token_save_failed&message=${encodeURIComponent(error.message)}`,
       );
     }
   }
@@ -126,13 +126,13 @@ export class UserServicesController {
       const frontendUrl =
         this.configService.get<string>('FRONTEND_URL') ||
         'http://localhost:3001';
-      return res.redirect(`${frontendUrl}?google_drive_connected=true`);
+      return res.redirect(`${frontendUrl}/services?google_drive_connected=true`);
     } catch (error) {
       const frontendUrl =
         this.configService.get<string>('FRONTEND_URL') ||
         'http://localhost:3001';
       return res.redirect(
-        `${frontendUrl}?error=token_save_failed&message=${encodeURIComponent(error.message)}`,
+        `${frontendUrl}/services?error=token_save_failed&message=${encodeURIComponent(error.message)}`,
       );
     }
   }
@@ -167,13 +167,13 @@ export class UserServicesController {
       const frontendUrl =
         this.configService.get<string>('FRONTEND_URL') ||
         'http://localhost:3001';
-      return res.redirect(`${frontendUrl}?calendar_connected=true`);
+      return res.redirect(`${frontendUrl}/services?calendar_connected=true`);
     } catch (error) {
       const frontendUrl =
         this.configService.get<string>('FRONTEND_URL') ||
         'http://localhost:3001';
       return res.redirect(
-        `${frontendUrl}?error=token_save_failed&message=${encodeURIComponent(error.message)}`,
+        `${frontendUrl}/services?error=token_save_failed&message=${encodeURIComponent(error.message)}`,
       );
     }
   }
