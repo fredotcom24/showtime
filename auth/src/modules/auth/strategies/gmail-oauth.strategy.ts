@@ -8,7 +8,8 @@ export class GmailOAuthStrategy extends PassportStrategy(Strategy, 'gmail-oauth'
   constructor(private configService: ConfigService) {
     const clientID = configService.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = configService.get<string>('GOOGLE_CLIENT_SECRET');
-    const callbackURL = 'http://localhost:3000/user-services/gmail/callback';
+    const callbackURL =
+      'https://showtime-2h1k.onrender.com/user-services/gmail/callback';
 
     super({
       clientID: clientID!,

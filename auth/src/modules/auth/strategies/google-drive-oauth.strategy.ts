@@ -12,7 +12,7 @@ export class GoogleDriveOAuthStrategy extends PassportStrategy(
     const clientID = configService.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = configService.get<string>('GOOGLE_CLIENT_SECRET');
     const callbackURL =
-      'http://localhost:3000/user-services/google-drive/callback';
+      'https://showtime-2h1k.onrender.com/google-drive/callback';
 
     super({
       clientID: clientID!,
