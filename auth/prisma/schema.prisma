@@ -59,11 +59,11 @@ enum ServiceType {
 model Widget {
   id              String            @id @default(auto()) @map("_id") @db.ObjectId
   serviceId       String            @db.ObjectId
-  name            String            
-  displayName     String            
+  name            String
+  displayName     String
   description     String
-  paramSchema     Json              
-  refreshRate     Int               @default(300) // in seconds (5 min default)
+  paramSchema     Json
+  refreshRate     Int       @default(300) // in seconds (5 min default)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
@@ -98,8 +98,7 @@ model WidgetInstance {
   userId          String    @db.ObjectId
   widgetId        String    @db.ObjectId
   config          Json      // configuration (ex: city for weather)
-  position        Json      // {x: 0, y: 0, width: 2, height: 1}
-  refreshRate     Int?      
+  refreshRate     Int       @default(300) // in seconds (5 min default)
   isActive        Boolean   @default(true)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
