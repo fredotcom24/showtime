@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  username  String   @unique
+  password  String?
+  
+  isVerified           Boolean  @default(false)
+  verificationToken    String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  
+  authProvider   AuthProvider @default(LOCAL)
+  authProviderId String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //relations
+  userServices  UserService[]
+  widgetInstances WidgetInstance[]
+  
+  @@map("users")
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
+model Service {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  name            String        @unique
+  displayName     String        
+  description     String?
+  type            ServiceType   
+  requiresAuth    Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // relations
+  widgets         Widget[]
+  userServices    UserService[]
+}
+
+enum ServiceType {
+  PUBLIC
+  PERSONAL
+}
+
+model Widget {
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  serviceId       String            @db.ObjectId
+  name            String            
+  displayName     String            
+  description     String
+  paramSchema     Json              
+  refreshRate     Int               @default(300) // in seconds (5 min default)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // relations
+  service         Service           @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  instances       WidgetInstance[]
+
+  @@unique([serviceId, name])
+}
+
+model UserService {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String    @db.ObjectId
+  serviceId       String    @db.ObjectId
+  accessToken     String?   
+  refreshToken    String?   
+  tokenExpiry     DateTime? 
+  config          Json?     
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service         Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, serviceId])
+}
+
+model WidgetInstance {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String    @db.ObjectId
+  widgetId        String    @db.ObjectId
+  config          Json      // configuration (ex: city for weather)
+  position        Json      // {x: 0, y: 0, width: 2, height: 1}
+  refreshRate     Int?      
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  widget          Widget    @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
