@@ -44,7 +44,13 @@ export class AuthService {
     // Auto-activate Weather service (no auth required)
     await this.activateWeatherService(user.id);
 
-    await this.sendMail(user.id);
+    // Send verification email (don't block registration if it fails)
+    try {
+      await this.sendMail(user.id);
+    } catch (error) {
+      console.error('Failed to send verification email:', error);
+      // Continue with registration even if email fails
+    }
 
     const token = this.jwtService.sign({
       userId: user.id,

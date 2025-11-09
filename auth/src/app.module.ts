@@ -24,10 +24,14 @@ import { AboutModule } from './modules/about/about.module';
     MailerModule.forRoot({
       transport: {
         host: process.env.EMAIL_HOST,
+        port: 587,
         secure: false,
         auth: {
           user: process.env.EMAIL_USERNAME,
           pass: process.env.EMAIL_PASSWORD,
+        },
+        tls: {
+          rejectUnauthorized: false,
         },
       },
     }),
